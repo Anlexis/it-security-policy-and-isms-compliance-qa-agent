@@ -1,0 +1,21 @@
+# Runtime parameters — loaded by AgentRegistry, passed as Graph(config=...).
+# Separate from config/agent.yaml (the static manifest, which carries identity
+# only). src/api/server.py reads this same file, so a registry-loaded agent and
+# a standalone deployment run on one declaration.
+
+max_retry: 3
+timeout_s: 30
+
+llm:
+  # Grounded-generation prompt template surfaced to GenerateAnswerNode. The
+  # shipped pipeline synthesises the answer deterministically from the
+  # retrieved chunks; this template documents the production model wiring.
+  system_prompt_template: "prompts/isms_compliance.j2"
+
+retrieval:
+  # Compliance corpus query defaults. ISMS answers cite specific
+  # standard/regulation clauses, so precision matters more than recall:
+  # a deliberately high relevance floor keeps low-confidence chunks out of
+  # the grounded answer.
+  top_k: 8
+  score_threshold: 0.4
